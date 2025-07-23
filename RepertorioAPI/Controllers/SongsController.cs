@@ -6,11 +6,11 @@ namespace RepertorioAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SongController : ControllerBase
+    public class SongsController : ControllerBase
     {
         private readonly ISongService _songService;
 
-        public SongController(ISongService songService)
+        public SongsController(ISongService songService)
         {
             _songService = songService;
         }
