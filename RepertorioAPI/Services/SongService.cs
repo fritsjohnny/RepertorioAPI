@@ -8,10 +8,11 @@ namespace RepertorioAPI.Services
     public interface ISongService
     {
         Task<List<Song>> GetAllAsync();
-        Task<Song> GetByIdAsync(int id);
+        Task<Song?> GetByIdAsync(int id);
         Task<Song> CreateAsync(Song song);
         Task<bool> UpdateAsync(Song song);
         Task<bool> DeleteAsync(int id);
+        Task<List<Song>> SearchAsync(string? title, string? theme, string? tags);
     }
 
     public class SongService : ISongService
@@ -66,6 +67,22 @@ namespace RepertorioAPI.Services
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<List<Song>> SearchAsync(string? title, string? theme, string? tags)
+        {
+            IQueryable<Song> query = _context.Songs;
+
+            if (!string.IsNullOrWhiteSpace(title))
+                query = query.Where(s => (s.Title ?? "").ToLower().Contains(title.ToLower()));
+
+            if (!string.IsNullOrWhiteSpace(theme))
+                query = query.Where(s => (s.Theme ?? "").ToLower().Contains(theme.ToLower()));
+
+            if (!string.IsNullOrWhiteSpace(tags))
+                query = query.Where(s => (s.Tags ?? "").ToLower().Contains(tags.ToLower()));
+
+            return await query.OrderBy(s => s.Title).ToListAsync();
         }
     }
 }

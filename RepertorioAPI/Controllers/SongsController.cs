@@ -58,5 +58,13 @@ namespace RepertorioAPI.Controllers
 
             return deleted ? NoContent() : NotFound();
         }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<Song>>> SearchSongs([FromQuery] string? title, [FromQuery] string? theme, [FromQuery] string? tags)
+        {
+            List<Song>? result = await _songService.SearchAsync(title, theme, tags);
+
+            return Ok(result);
+        }
     }
 }
